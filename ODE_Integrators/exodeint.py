@@ -7,8 +7,8 @@ Created on Thu Jun 18 15:56:18 2015
 
 The functions for this module adopt the following convention
 
-[y, t] = SOLVER(F,y0,t0,tf,h)
-[y, t] = SOLVER(F,y0,t0,tf,h,history = False)
+y, t = SOLVER(F,y0,t0,tf,h)
+y, t = SOLVER(F,y0,t0,tf,h,history = False)
 
 Input:
         F -- Function to be integrated dy/dt = F(y,t)
@@ -25,6 +25,9 @@ Output:
         y -- numerical solution as an n-size array
         t -- vector of time steps, linspace(t0,tf,nstep)
         
+        If time history is output, then the array is shaped
+        [rows = time vector length, cols = space data length]
+        
 Notes:
         nstep = int((tf-t0)/h)+1 since h = (tf - t0)/(nstep-1)
         
@@ -36,7 +39,7 @@ Edits:
         time evolution PDEs (KJW)
         
 Solvers:
-        [y, t] = RK4e(F,y0,t0,tf,h,history)
+        y, t = RK4e(F,y0,t0,tf,h,history)
         exodeint.test?? to see the unit test and an example
 """
 
@@ -79,10 +82,7 @@ def RK4e(F,y0,t0,tf,h,history = False):
         else:
             return yy[:,0], tv      # 1D solution returned as 1D array
     else:
-        if vector_out:
-            return y, tv
-        else:
-            return y[:,0], tv       # 1D solution returned as 1D array (scalar)
+        return y
 
 # ODE Test Function, dy/dt = F(y,t)
 def testf(y,t):
@@ -95,7 +95,7 @@ def test():
     hvec = array([0.1, 0.01, 0.001])
     print "Scalar Test Results:\n"
     for h in hvec:
-        [y, tv] = RK4e(testf,y0,t0,tf,h,True)
+        y, tv = RK4e(testf,y0,t0,tf,h,True)
         ytrue = sqrt(pi)/2*exp(-tv**2)
         delta = sqrt(h)*norm(y-ytrue)
         print("Discrete L2 error is %20.15e for h = %20.15e") % (delta, h)
@@ -103,9 +103,14 @@ def test():
     delta = zeros(3)
     print "\nVector Test Results:\n"
     for h in hvec:
-        [y, tv] = RK4e(testf,y0,t0,tf,h,True)
+        y, tv = RK4e(testf,y0,t0,tf,h,True)
         ytrue = sqrt(pi)/2*exp(-tv**2)
         delta[0] = sqrt(h)*norm(y[:,0]-ytrue)
         delta[1] = sqrt(h)*norm(y[:,1]-2*ytrue)
         delta[2] = sqrt(h)*norm(y[:,2]-3*ytrue)
         print("Discrete L2 error is\n %20.15e, %20.15e, %20.15e\nfor h = %20.15e") % (delta[0],delta[1],delta[2], h)
+
+if __name__ == "__main__":
+    
+    print "Running Tests"
+    test()
