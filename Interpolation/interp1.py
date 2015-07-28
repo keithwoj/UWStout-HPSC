@@ -76,7 +76,7 @@ def testf(x):
     return 1/(1+(5*x)**2)
 
 def test():
-    #Create Chebyshev points to interpolate
+    #Create Chebyshev points (of the second kind) to interpolate
     n = 31
     x = cos(pi*linspace(0,n,n)/n)
     y = testf(x)

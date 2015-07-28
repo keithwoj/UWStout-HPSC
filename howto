@@ -1,0 +1,6 @@
+To push the latest commit to GitHub:
+git push https://github.com/keithwoj/UWStout-HPSC.git
+
+To load IPython in Spyder (hopefully until bug is fixed):
+import IPython
+IPython.start_ipython()
